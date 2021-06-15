@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class ReportServiceImpl implements ReportService {
     private static final Logger LOG = LoggerFactory.getLogger(ReportServiceImpl.class);
-    private int count = 0;
 
     @Autowired
     private EmployeeService employeeService;
@@ -21,24 +20,34 @@ public class ReportServiceImpl implements ReportService {
     public ReportingStructure create(String id) {
         LOG.debug("Creating ReportingStructure for employee id [{}]", id);
 
-        count = 0;
         Employee employee = employeeService.read(id);
-        countTotalReports(employee);
+        int totalReports = countTotalReports(employee);
 
-        return new ReportingStructure(employee, count);
+        return new ReportingStructure(employee, totalReports);
     }
 
     /**
-     * Recursively traverses the employee's list of reports and counts the total.
+     * Recursively counts all reports, both direct and distant, under a given employee.
      * @param employee the "root" employee
+     * @return total number of reports under the employee
      */
-    private void countTotalReports(Employee employee) {
-        // FIXME: not the most optimal approach -- refactor function to directly return total count.
-        if (employee.getDirectReports() != null) {
-            for (Employee i : employee.getDirectReports()) {
-                countTotalReports(employeeService.read(i.getEmployeeId()));
-                count++;
-            }
+    private int countTotalReports(Employee employee) {
+        int count = 0;
+        if (employee.getDirectReports() == null) return 0;
+        for (Employee i : employee.getDirectReports()) {
+            count = count + recursionHelper(i);
+        }
+        return count;
+    }
+
+    /**
+     * Helper method for the report counter.
+     */
+    private int recursionHelper(Employee employee) {
+        if (employeeService.read(employee.getEmployeeId()).getDirectReports() == null) {
+            return 1;
+        } else {
+            return 1 + countTotalReports(employeeService.read(employee.getEmployeeId()));
         }
     }
 }
