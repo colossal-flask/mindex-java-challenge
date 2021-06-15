@@ -18,18 +18,18 @@ public class CompensationTest {
 
     @Test
     public void testCompensationInsertionAndRetrieval() {
-        compensationService.create("16a596ae-edd3-4847-99fe-c4518e82c86f", 70000, "01/01/2022");
-        compensationService.create("c0c2293d-16bd-4603-8e08-638a9d18b22c", 66000, "10/01/2021");
+        compensationService.create("16a596ae-edd3-4847-99fe-c4518e82c86f", 70000, "01-01-2022");
+        compensationService.create("c0c2293d-16bd-4603-8e08-638a9d18b22c", 66000, "10-01-2021");
 
         Compensation johnLennon = compensationService.read("16a596ae-edd3-4847-99fe-c4518e82c86f");
         Compensation georgeHarrison = compensationService.read("c0c2293d-16bd-4603-8e08-638a9d18b22c");
 
         assertEquals("John Lennon", johnLennon.getEmployee().getFirstName() + " " + johnLennon.getEmployee().getLastName());
         assertEquals(70000, johnLennon.getSalary());
-        assertEquals("01/01/2022", johnLennon.getEffectiveDate());
+        assertEquals("01-01-2022", johnLennon.getEffectiveDate());
 
         assertEquals("George Harrison", georgeHarrison.getEmployee().getFirstName() + " " + georgeHarrison.getEmployee().getLastName());
         assertEquals(66000, georgeHarrison.getSalary());
-        assertEquals("10/01/2021", georgeHarrison.getEffectiveDate());
+        assertEquals("10-01-2021", georgeHarrison.getEffectiveDate());
     }
 }
